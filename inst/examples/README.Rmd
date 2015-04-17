@@ -1,3 +1,12 @@
+---
+title: "Statebin Charts"
+author: "Ramnath Vaidyanathan"
+date: "April 17, 2015"
+output:
+  html_document:
+    self_contained: yes
+---
+
 ## State Bin
 
 This is an alpha version of tool to create interactive state bin maps. It has an R API as well as a javascript API.
@@ -12,14 +21,7 @@ install_github(c('ramnathv/htmlwidgets', 'ramnathv/rcstatebin'))
 
 ## Usage
 
-Let us start by recreating some analysis done by http://fivethirtyeight.com on where states get their taxes from. You can create an interactive statebin chart with just one line of code, using the formula interface.
-
-```{r eval = F}
-statebin(taxdata, share ~ state | description, control = 'dropdown')
-```
-
-Alternately, you can also use a more traditional syntax.
-
+Let us start by recreating some analysis done by http://fivethirtyeight.com on where states get their taxes from. 
 
 ```{r}
 library(rcstatebin)
@@ -34,6 +36,11 @@ statebin(data = taxdata,
 )
 ```
 
+You can also use a formula interface to create a statebin chart.
+
+```{r eval = F}
+statebin(taxdata, share ~ state | description, control = 'dropdown')
+```
 
 ## Javascript API
 

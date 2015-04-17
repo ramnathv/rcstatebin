@@ -1,0 +1,33 @@
+dependencies:
+- name: d3
+  version: 3.5.5
+  src: htmlwidgets/lib/d3
+  script: d3.min.js
+- name: d3-jetpack
+  version: 0.1
+  src: htmlwidgets/lib/d3jetpack
+  script: d3-jetpack.js
+- name: d3-svg-legend
+  version: 0.1
+  src: htmlwidgets/lib/d3legend
+  script: legend.js
+- name: d3-tip
+  version: 0.6.6
+  src: htmlwidgets/lib/d3tip
+  script: d3tip.js
+  style: d3tip.css
+- name: bootstrap-yeti
+  version: 3.3.4
+  src: htmlwidgets/lib/bootstrap
+  style: css/bootstrap.min.yeti.css
+- name: colorbrewer
+  version: 0.1
+  src: htmlwidgets/lib/colorbrewer
+  script: colorbrewer.js
+- name: d3statebin
+  version: 0.1
+  src: htmlwidgets/lib/d3statebin
+  script: d3statebin.js
+  style: d3statebin.css
+
+
