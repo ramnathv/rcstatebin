@@ -58,11 +58,11 @@ d3.select(el)
 ```
 
 
-## References
+## Acknowledgements
 
 Thanks are due to all these folks below, for building great components were used to create `d3statebin`
 
-1. [Mike Bostock] for [D3.js](http://d3js.org)
-2. [Elijah Meeks] for [d3.svg.legend](https://github.com/emeeks/d3-svg-legend)
-3. [Gregor Aisch] for [d3-jetpack](https://github.com/gka/d3-jetpack)
+1. [Mike Bostock](https://github.com/mbostock) for [D3.js](http://d3js.org)
+2. [Elijah Meeks](https://github.com/emeeks) for [d3.svg.legend](https://github.com/emeeks/d3-svg-legend)
+3. [Gregor Aisch](https://github.com/gka) for [d3-jetpack](https://github.com/gka/d3-jetpack)
 4. [Justin Palmer](Justin Palmer) for [d3-tip](https://github.com/Caged/d3-tip)
