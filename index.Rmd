@@ -1,1 +1,68 @@
-## Statebin
+---
+title: "Statebin Charts"
+author: "Ramnath Vaidyanathan"
+date: "April 17, 2015"
+output:
+  html_document:
+    self_contained: yes
+---
+
+## State Bin
+
+This is an alpha version of tool to create interactive state bin maps. It has an R API as well as a javascript API.
+
+## Installation
+
+You can install `rcstatebin` from github. 
+
+```r
+install_github(c('ramnathv/htmlwidgets', 'ramnathv/rcstatebin'))
+```
+
+## Usage
+
+Let us start by recreating some analysis done by http://fivethirtyeight.com on where states get their taxes from. 
+
+```{r}
+library(rcstatebin)
+statebin(data = taxdata,
+  x = "state",
+  y = "share",
+  facet = "description",
+  heading =  "<b>Where do your state's taxes come from?</b>",
+  footer = "<small>Source: Census <a href='http://www2.census.gov/govs/statetax/14staxcd.txt'>(Data)</a>",
+  colors = RColorBrewer::brewer.pal(5, 'PuRd'),
+  control = 'dropdown'
+)
+```
+
+You can also use a formula interface to create a statebin chart.
+
+```{r eval = F}
+statebin(taxdata, share ~ state | description, control = 'dropdown')
+```
+
+## Javascript API
+
+I built `d3statebin` using a modular approach following the reusable chart guidelines outlined by [Mike Bostock](http://bost.ocks.org/mike/chart/)
+
+```js
+mystatemap = statemap()
+  .x("state")
+  .y("share")
+  .facet("description")
+  
+d3.select(el)
+  .datum(x.data)
+  .call(mystatemap)
+```
+
+
+## References
+
+Thanks are due to all these folks below, for building great components were used to create `d3statebin`
+
+1. [Mike Bostock] for [D3.js](http://d3js.org)
+2. [Elijah Meeks] for [d3.svg.legend](https://github.com/emeeks/d3-svg-legend)
+3. [Gregor Aisch] for [d3-jetpack](https://github.com/gka/d3-jetpack)
+4. [Justin Palmer](Justin Palmer) for [d3-tip](https://github.com/Caged/d3-tip)
