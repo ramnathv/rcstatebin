@@ -66,3 +66,5 @@ Thanks are due to all these folks below, for building great components were used
 2. [Elijah Meeks](https://github.com/emeeks) for [d3.svg.legend](https://github.com/emeeks/d3-svg-legend)
 3. [Gregor Aisch](https://github.com/gka) for [d3-jetpack](https://github.com/gka/d3-jetpack)
 4. [Justin Palmer](Justin Palmer) for [d3-tip](https://github.com/Caged/d3-tip)
+5. [Bob Rudis]() for [statebins](https://github.com/hrbrmstr/statebin)
+6. [Kenton Russell](http://github.com/timelyportfolio) for a lot of things.
