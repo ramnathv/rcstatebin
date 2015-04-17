@@ -1,0 +1,11 @@
+.statebin svg text {
+  font-family: "Helvetica";
+  font-size: 12px;
+  text-anchor: middle;
+  alignment-baseline: middle;
+  pointer-events: none;
+}
+
+.statebin .legend rect {
+  stroke: none;
+}

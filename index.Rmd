@@ -4,7 +4,7 @@ author: "Ramnath Vaidyanathan"
 date: "April 17, 2015"
 output:
   html_document:
-    self_contained: yes
+    self_contained: no
 ---
 
 ## State Bin
