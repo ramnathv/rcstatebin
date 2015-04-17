@@ -34,6 +34,8 @@ statebin(data = taxdata,
 )
 ```
 
+![gif](http://g.recordit.co/FVjqJddzvs.gif)
+
 
 ## Javascript API
 
