@@ -132,7 +132,7 @@
             };
         };
         // store d3.f as convenient unicode character function (alt-f on macs)
-        if (!window.hasOwnProperty('ƒ')) window.ƒ = d3.f;
+        //if (!window.hasOwnProperty('ƒ')) window.ƒ = d3.f;
     }
 
     if (typeof d3 === 'object' && d3.version) jetpack(d3);
