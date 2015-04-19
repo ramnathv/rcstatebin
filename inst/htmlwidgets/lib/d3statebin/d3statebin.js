@@ -493,7 +493,9 @@
             return "translate(" + (S.x(A.x(d))) + ", " + (S.y(A.y(d))) + ")";
           }
         });
-        return svg.selectAll(".cell").append("rect").attr({
+        cell.append("rect.state");
+        cell.append("text.state");
+        svg.selectAll(".cell").select("rect.state").attr({
           x: 0,
           y: 0,
           width: S.x.rangeBand(),
@@ -503,6 +505,7 @@
             return S.c(A.z(d));
           }
         });
+        return svg.selectAll(".cell");
       });
     };
     exports.opts = opts;
@@ -545,7 +548,7 @@
         cell.selectAll(".cell").call(d3.render.tip);
         legend = d3.render.legend().inputScale(S.c);
         d3.select(this).call(legend);
-        return cell.selectAll(".cell").append("text").attr({
+        return cell.selectAll("text.state").attr({
           dx: S.x.rangeBand() / 2,
           dy: S.y.rangeBand() / 2
         }).text(function(d) {

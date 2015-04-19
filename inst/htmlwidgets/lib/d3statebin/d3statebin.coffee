@@ -132,8 +132,9 @@ d3.heatmap = (S, A) ->
         .dataAppend(data, "g.cell")
         .attr
            transform: (d) -> "translate(#{S.x A.x(d)}, #{S.y A.y(d)})"
-
-      svg.selectAll(".cell").append("rect")
+      cell.append("rect.state")
+      cell.append("text.state")
+      svg.selectAll(".cell").select("rect.state")
         .attr
            x: 0
            y: 0
@@ -141,6 +142,7 @@ d3.heatmap = (S, A) ->
            height: S.y.rangeBand()
         .style
            fill: (d) -> S.c A.z(d)
+      svg.selectAll(".cell")
   exports.opts = opts; createAccessors(exports)
   exports
 
@@ -181,9 +183,7 @@ d3.statemap = (S, A) ->
        cell.selectAll(".cell").call(d3.render.tip)
        legend = d3.render.legend().inputScale(S.c)
        d3.select(this).call(legend)
-
-       cell.selectAll(".cell")
-        .append("text")
+       cell.selectAll("text.state")
         .attr
            dx: S.x.rangeBand()/2
            dy: S.y.rangeBand()/2
