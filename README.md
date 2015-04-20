@@ -15,6 +15,7 @@ install_github(c('ramnathv/htmlwidgets', 'ramnathv/rcstatebin'))
 Let us start by recreating some analysis done by http://fivethirtyeight.com on where states get their taxes from. You can create an interactive statebin chart with just one line of code, using the formula interface.
 
 ```{r eval = F}
+library(rcstatebin)
 statebin(taxdata, share ~ state | description, control = 'dropdown')
 ```
 
