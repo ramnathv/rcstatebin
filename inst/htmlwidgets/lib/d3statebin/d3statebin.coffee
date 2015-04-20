@@ -127,14 +127,15 @@ d3.heatmap = (S, A) ->
       S.x.domain d3.uniq(data, A.x)
       S.y.domain d3.uniq(data, A.y)
       S.c.domain d3.extent(data, A.z)
-      svg = d3.select(this)
-      cell = svg
-        .dataAppend(data, "g.cell")
-        .attr
-           transform: (d) -> "translate(#{S.x A.x(d)}, #{S.y A.y(d)})"
-      cell.append("rect.state")
-      cell.append("text.state")
-      svg.selectAll(".cell").select("rect.state")
+      cell = d3.select(@).selectAll(".cell").data(data, A.id)
+      cellEnter = cell.enter().append("g.cell")
+      cellEnter.append("rect.state")
+      cellEnter.append("text.state")
+      
+      cell.attr
+        transform: (d) -> "translate(#{S.x A.x(d)}, #{S.y A.y(d)})"
+        
+      cell.select("rect.state")
         .attr
            x: 0
            y: 0
@@ -142,7 +143,7 @@ d3.heatmap = (S, A) ->
            height: S.y.rangeBand()
         .style
            fill: (d) -> S.c A.z(d)
-      svg.selectAll(".cell")
+      cell
   exports.opts = opts; createAccessors(exports)
   exports
 
@@ -180,7 +181,7 @@ d3.statemap = (S, A) ->
   exports = (selection) ->
     selection.each (data) ->
        cell = d3.select(this).call(d3.heatmap(S, A))
-       cell.selectAll(".cell").call(d3.render.tip)
+       cell.selectAll("rect.state").call(d3.render.tip)
        legend = d3.render.legend().inputScale(S.c)
        d3.select(this).call(legend)
        cell.selectAll("text.state")
@@ -225,6 +226,7 @@ root.statemap = ->
           x: (d) -> state_coords(d[opts.x]).col
           y: (d) -> state_coords(d[opts.x]).row
           z: (d) -> d[opts.y]
+          id: (d) -> d[opts.x]
         S =
           x: d3.scale.ordinal().rangeRoundBands([0, opts.width], 0.02)
           y: d3.scale.ordinal().rangeRoundBands([0, opts.height], 0.02)
@@ -262,13 +264,13 @@ root.statemap = ->
         mypanel1.select(".panel-footer").html(opts.footer)
 
         update =  (grp) ->
+          data_ = data.filter (d) -> 
+            if opts.facet
+              return d[opts.facet] is grp
+            else
+              return true
           d3.container(pbody, opts)
-            .datum(data.filter (d) ->
-               if opts.facet
-                 d[opts.facet] is grp
-               else
-                 true
-            )
+            .datum(data_, A.id)
             .call(d3.statemap(S, A))
 
         if opts.facet

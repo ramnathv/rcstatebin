@@ -483,19 +483,20 @@
     opts = extend(defaults, arguments[0]);
     exports = function(selection) {
       return selection.each(function(data) {
-        var cell, svg;
+        var cell, cellEnter;
         S.x.domain(d3.uniq(data, A.x));
         S.y.domain(d3.uniq(data, A.y));
         S.c.domain(d3.extent(data, A.z));
-        svg = d3.select(this);
-        cell = svg.dataAppend(data, "g.cell").attr({
+        cell = d3.select(this).selectAll(".cell").data(data, A.id);
+        cellEnter = cell.enter().append("g.cell");
+        cellEnter.append("rect.state");
+        cellEnter.append("text.state");
+        cell.attr({
           transform: function(d) {
             return "translate(" + (S.x(A.x(d))) + ", " + (S.y(A.y(d))) + ")";
           }
         });
-        cell.append("rect.state");
-        cell.append("text.state");
-        svg.selectAll(".cell").select("rect.state").attr({
+        cell.select("rect.state").attr({
           x: 0,
           y: 0,
           width: S.x.rangeBand(),
@@ -505,7 +506,7 @@
             return S.c(A.z(d));
           }
         });
-        return svg.selectAll(".cell");
+        return cell;
       });
     };
     exports.opts = opts;
@@ -545,7 +546,7 @@
       return selection.each(function(data) {
         var cell, legend;
         cell = d3.select(this).call(d3.heatmap(S, A));
-        cell.selectAll(".cell").call(d3.render.tip);
+        cell.selectAll("rect.state").call(d3.render.tip);
         legend = d3.render.legend().inputScale(S.c);
         d3.select(this).call(legend);
         return cell.selectAll("text.state").attr({
@@ -613,6 +614,9 @@
           },
           z: function(d) {
             return d[opts.y];
+          },
+          id: function(d) {
+            return d[opts.x];
           }
         };
         S = {
@@ -642,13 +646,15 @@
         }
         mypanel1.select(".panel-footer").html(opts.footer);
         update = function(grp) {
-          return d3.container(pbody, opts).datum(data.filter(function(d) {
+          var data_;
+          data_ = data.filter(function(d) {
             if (opts.facet) {
               return d[opts.facet] === grp;
             } else {
               return true;
             }
-          })).call(d3.statemap(S, A));
+          });
+          return d3.container(pbody, opts).datum(data_, A.id).call(d3.statemap(S, A));
         };
         if (opts.facet) {
           return update(d3.uniq(data, opts.facet)[0]);
