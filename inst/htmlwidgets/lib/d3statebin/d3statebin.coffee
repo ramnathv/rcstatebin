@@ -27,7 +27,7 @@ extend = (defaults, options) ->
 
 
 d3.table = (data) ->
-  table = ["<table style='line-height:2em;'>"]
+  table = ["<b>", data.state, "</b>", "<table style='line-height:2em;'>"]
   d3.entries(data).forEach (d) ->
     table.push("<tr><td>" + d.key + "</td><td>&nbsp</td><td>" + d.value + "</td></tr>")
   table.join("") + "</table>"
@@ -56,11 +56,21 @@ d3.ui.panel = () ->
   opts = arguments[0] || defaults
   exports = (selection) ->
     selection.each (data) ->
+      panel = d3.select(@).selectAll("div.panel.panel-#{opts.type}").data([{}])
+      panelEnter = panel.enter().append("div.panel.panel-#{opts.type}")
+      subPanels = panelEnter.selectAll("div").data(opts.panels)
+      subPanels.enter().append("div")
+      
+      subPanels.attr
+        class: (d) -> "panel-#{d}"
+      ###
       d3.select(@)
         .appendOnce("div.panel.panel-#{opts.type}")
         .dataAppend(opts.panels, "div")
         .attr
            class: (d) -> "panel-#{d}"
+      ###
+      panel
   exports.opts = opts; createAccessors(exports)
   exports
 

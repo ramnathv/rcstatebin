@@ -44,7 +44,7 @@
 
   d3.table = function(data) {
     var table;
-    table = ["<table style='line-height:2em;'>"];
+    table = ["<b>", data.state, "</b>", "<table style='line-height:2em;'>"];
     d3.entries(data).forEach(function(d) {
       return table.push("<tr><td>" + d.key + "</td><td>&nbsp</td><td>" + d.value + "</td></tr>");
     });
@@ -87,11 +87,25 @@
     opts = arguments[0] || defaults;
     exports = function(selection) {
       return selection.each(function(data) {
-        return d3.select(this).appendOnce("div.panel.panel-" + opts.type).dataAppend(opts.panels, "div").attr({
+        var panel, panelEnter, subPanels;
+        panel = d3.select(this).selectAll("div.panel.panel-" + opts.type).data([{}]);
+        panelEnter = panel.enter().append("div.panel.panel-" + opts.type);
+        subPanels = panelEnter.selectAll("div").data(opts.panels);
+        subPanels.enter().append("div");
+        subPanels.attr({
           "class": function(d) {
             return "panel-" + d;
           }
         });
+
+        /*
+        d3.select(@)
+          .appendOnce("div.panel.panel-#{opts.type}")
+          .dataAppend(opts.panels, "div")
+          .attr
+             class: (d) -> "panel-#{d}"
+         */
+        return panel;
       });
     };
     exports.opts = opts;
