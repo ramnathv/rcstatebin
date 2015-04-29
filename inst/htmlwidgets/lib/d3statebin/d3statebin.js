@@ -155,7 +155,7 @@
     var exports, opts;
     opts = {
       callback: function(d, i) {
-        return console.log(d);
+        return d;
       }
     };
     exports = function(selection) {
@@ -528,6 +528,52 @@
     return exports;
   };
 
+  d3.hexmap = function(S, A) {
+    var defaults, exports, hexbin, opts;
+    defaults = {};
+    hexbin = d3.hexbin().radius(18.5);
+    opts = extend(defaults, arguments[0]);
+    exports = function(selection) {
+      return selection.each(function(data) {
+        var cell, cellEnter;
+        S.x.domain(d3.uniq(data, A.x));
+        S.y.domain(d3.uniq(data, A.y));
+        S.c.domain(d3.extent(data, A.z));
+        cell = d3.select(this).selectAll(".cell").data(data, A.id);
+        cellEnter = cell.enter().append("g.cell");
+        cellEnter.append("path.hexagon");
+        cellEnter.append("text.state");
+        cell.attr({
+          transform: function(d) {
+            var offset, x, y;
+            x = A.x(d);
+            y = A.y(d);
+            if (y % 2 === 0) {
+              offset = S.x.rangeBand() / 2;
+            } else {
+              offset = 0;
+            }
+            return "translate(" + (S.x(x) + offset) + ", " + (S.y(y)) + ")";
+          }
+        });
+        cell.select("path.hexagon").attr({
+          transform: "translate(15, 15)",
+          d: function(d) {
+            return hexbin.hexagon(hexbin.radius());
+          }
+        }).style({
+          fill: function(d) {
+            return S.c(A.z(d));
+          }
+        });
+        return cell;
+      });
+    };
+    exports.opts = opts;
+    createAccessors(exports);
+    return exports;
+  };
+
   d3.render = {} || d3.render;
 
   d3.render.legend = function() {
@@ -576,6 +622,29 @@
     return exports;
   };
 
+  d3.hexstatemap = function(S, A) {
+    var exports, opts;
+    opts = {};
+    exports = function(selection) {
+      return selection.each(function(data) {
+        var cell, legend;
+        cell = d3.select(this).call(d3.hexmap(S, A));
+        cell.selectAll(".cell").call(d3.render.tip);
+        legend = d3.render.legend().inputScale(S.c);
+        d3.select(this).call(legend);
+        return cell.selectAll("text.state").attr({
+          dx: S.x.rangeBand() / 2,
+          dy: S.y.rangeBand() / 2
+        }).text(function(d) {
+          return d.state;
+        });
+      });
+    };
+    exports.opts = opts;
+    createAccessors(exports);
+    return exports;
+  };
+
   d3.container = function(sel, o) {
     var svg;
     o.margin = o.margin || {
@@ -602,7 +671,7 @@
       y: "count",
       facet: null,
       width: 400,
-      height: 400 / 1.5,
+      height: 400 / 1.7,
       margin: {
         top: 20,
         right: 80,
@@ -613,7 +682,8 @@
       heading: "Statebins",
       footer: "This is a statebin chart",
       units: "",
-      control: 'dropdown'
+      control: 'dropdown',
+      type: 'rect'
     };
     opts = extend(defaults, arguments[0]);
     exports = function(selection) {
@@ -640,11 +710,9 @@
         };
         panel1 = d3.ui.panel().panels(['heading', 'body', 'footer']);
         mypanel1 = d3.select(this).call(panel1);
-        console.log(mypanel1.data());
         mypanel1.select('.panel-heading').html(opts.heading);
         pbody = mypanel1.select(".panel-body");
         if (opts.facet) {
-          console.log("Group is defined");
           switch (opts.control) {
             case "steps":
               choices = d3.ui.paginate().callback(function(d, i) {
@@ -668,7 +736,11 @@
               return true;
             }
           });
-          return d3.container(pbody, opts).datum(data_, A.id).call(d3.statemap(S, A));
+          if (opts.type === 'rect') {
+            return d3.container(pbody, opts).datum(data_, A.id).call(d3.statemap(S, A));
+          } else {
+            return d3.container(pbody, opts).datum(data_, A.id).call(d3.hexstatemap(S, A));
+          }
         };
         if (opts.facet) {
           return update(d3.uniq(data, opts.facet)[0]);

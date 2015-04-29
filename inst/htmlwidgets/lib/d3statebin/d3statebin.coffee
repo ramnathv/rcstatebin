@@ -102,7 +102,7 @@ d3.ui.select = ->
 
 
 d3.ui.paginate = ->
-  opts = {callback: (d, i) -> console.log d}
+  opts = {callback: (d, i) -> return d}
   exports = (selection) ->
     selection.each (data) ->
 
@@ -151,6 +151,43 @@ d3.heatmap = (S, A) ->
       cell
   exports.opts = opts; createAccessors(exports)
   exports
+  
+
+d3.hexmap = (S, A) ->
+  defaults = {}
+  hexbin = d3.hexbin().radius(18.5)
+  opts = extend(defaults, arguments[0])
+  exports = (selection) ->
+    selection.each (data) ->
+      S.x.domain d3.uniq(data, A.x)
+      S.y.domain d3.uniq(data, A.y)
+      S.c.domain d3.extent(data, A.z)
+      cell = d3.select(@).selectAll(".cell").data(data, A.id)
+      cellEnter = cell.enter().append("g.cell")
+      cellEnter.append("path.hexagon")
+      cellEnter.append("text.state")
+      
+      cell.attr
+        transform: (d) ->
+          x = A.x(d)
+          y = A.y(d)
+          if (y % 2 is 0)
+            offset = S.x.rangeBand()/2
+          else
+            offset = 0
+          "translate(#{S.x(x) + offset}, #{S.y(y)})"
+          
+        
+      cell.select("path.hexagon")
+        .attr
+           transform: "translate(15, 15)"
+           d: (d) -> hexbin.hexagon(hexbin.radius())
+        .style
+           fill: (d) -> S.c A.z(d)
+      cell
+  exports.opts = opts; createAccessors(exports)
+  exports
+
 
 
 d3.render = {} || d3.render
@@ -194,8 +231,27 @@ d3.statemap = (S, A) ->
            dx: S.x.rangeBand()/2
            dy: S.y.rangeBand()/2
         .text (d) -> d.state
+       
   exports.opts = opts; createAccessors(exports)
   exports
+  
+d3.hexstatemap = (S, A) ->
+  opts = {}
+  exports = (selection) ->
+    selection.each (data) ->
+       cell = d3.select(this).call(d3.hexmap(S, A))
+       cell.selectAll(".cell").call(d3.render.tip)
+       legend = d3.render.legend().inputScale(S.c)
+       d3.select(this).call(legend)
+       cell.selectAll("text.state")
+        .attr
+           dx: S.x.rangeBand()/2
+           dy: S.y.rangeBand()/2
+        .text (d) -> d.state
+       
+  exports.opts = opts; createAccessors(exports)
+  exports
+
 
 
 d3.container = (sel, o) ->
@@ -215,13 +271,14 @@ root.statemap = ->
       y: "count"
       facet: null
       width: 400
-      height: 400/1.5
+      height: 400/1.7
       margin: {top: 20, right: 80, bottom: 50, left: 50}
       colors: colorbrewer.Blues[7]
       heading: "Statebins"
       footer: "This is a statebin chart"
       units: ""
       control: 'dropdown'
+      type: 'rect'
 
     opts = extend(defaults, arguments[0])
 
@@ -241,13 +298,13 @@ root.statemap = ->
           .panels(['heading', 'body', 'footer'])
 
         mypanel1 = d3.select(this).call(panel1)
-        console.log mypanel1.data()
+        #console.log mypanel1.data()
         mypanel1.select('.panel-heading').html(opts.heading)
 
         pbody = mypanel1.select(".panel-body")
 
         if opts.facet
-            console.log("Group is defined")
+            #console.log("Group is defined")
             switch opts.control
                 when "steps"
                   choices = d3.ui.paginate()
@@ -274,9 +331,14 @@ root.statemap = ->
               return d[opts.facet] is grp
             else
               return true
-          d3.container(pbody, opts)
-            .datum(data_, A.id)
-            .call(d3.statemap(S, A))
+          if opts.type is 'rect'
+            d3.container(pbody, opts)
+              .datum(data_, A.id)
+              .call(d3.statemap(S, A))
+          else
+            d3.container(pbody, opts)
+              .datum(data_, A.id)
+              .call(d3.hexstatemap(S, A))
 
         if opts.facet
           update d3.uniq(data, opts.facet)[0]

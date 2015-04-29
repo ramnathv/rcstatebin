@@ -24,6 +24,10 @@ dependencies:
   version: 0.1
   src: htmlwidgets/lib/colorbrewer
   script: colorbrewer.js
+- name: hexbin
+  version: 0.1
+  src: htmlwidgets/lib/hexbin
+  script: hexbin.js
 - name: d3statebin
   version: 0.1
   src: htmlwidgets/lib/d3statebin
