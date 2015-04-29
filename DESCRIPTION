@@ -1,7 +1,7 @@
 Package: rcstatebin
 Type: Package
 Title: What the Package Does (Title Case)
-Version: 0.1
+Version: 0.2
 Date: 2015-04-17
 Author: Ramnath Vaidyanathan
 Maintainer: Ramnath Vaidyanathan <ramnath.vaidya@gmail.com>

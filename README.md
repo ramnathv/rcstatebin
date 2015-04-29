@@ -37,6 +37,14 @@ statebin(data = taxdata,
 
 ![gif](http://g.recordit.co/FVjqJddzvs.gif)
 
+If you prefer hexagons instead of rectangles, you can pass `type = "hex"`.
+
+```r
+statebin(taxdata, share ~ state | description, control = 'dropdown', type = "hex")
+```
+
+![gif2](http://g.recordit.co/Pcio3gY70I.gif)
+
 
 ## Javascript API
 
